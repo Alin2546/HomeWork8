@@ -13,6 +13,7 @@ public class AthleteStats {
     private String firstShootingRange;
     private String secondShootingRange;
     private String thirdShootingRange;
+    private int initialSkiTimeResult;
 
     public AthleteStats(int athleteNumber, String athleteName, String countryCode, int skiTimeResults, String firstShootingRange, String secondShootingRange, String thirdShootingRange) {
         AthleteNumber = athleteNumber;
@@ -24,8 +25,9 @@ public class AthleteStats {
         this.thirdShootingRange = thirdShootingRange;
     }
 
-    public AthleteStats(String athleteName, int skiTimeResults) {
+    public AthleteStats(String athleteName, int skiTimeResults, int initialSkiTimeResult) {
         AthleteName = athleteName;
         SkiTimeResults = skiTimeResults;
+        this.initialSkiTimeResult = initialSkiTimeResult;
     }
 }

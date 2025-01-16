@@ -15,7 +15,8 @@ public class ResultMatcher {
 
     List<AthleteStats> athleteResults = new ArrayList<>();
     Set<AthleteStats> athleteResultsSorted = new TreeSet<>(Comparator.comparingInt(AthleteStats::getSkiTimeResults));
-    Path path = Paths.get("ski results.csv");
+    List<Integer> initialTimeList = new ArrayList<>();
+    Path path;
 
 
     public ResultMatcher(File file) {
@@ -26,26 +27,31 @@ public class ResultMatcher {
                 String[] compose = line.split(",");
                 athleteResults.add(new AthleteStats(Integer.parseInt(compose[0]), compose[1], compose[2], calculateStanding(compose[3]), compose[4], compose[5], compose[6]));
             }
-            int index = 0;
+
             for (AthleteStats athleteStats : athleteResults) {
-                athleteResultsSorted.add(new AthleteStats(athleteResults.get(index).getAthleteName(),
-                        athleteResults.get(index).getSkiTimeResults()
-                                + calculateTotalStandingTime(athleteResults.get(index).getFirstShootingRange(),
-                                athleteResults.get(index).getSecondShootingRange(),
-                                athleteResults.get(index).getThirdShootingRange())));
-                index++;
+                athleteResultsSorted.add(new AthleteStats(athleteStats.getAthleteName(),
+                        athleteStats.getSkiTimeResults()
+                                + (calculateTotalStandingTime(athleteStats.getFirstShootingRange(),
+                                athleteStats.getSecondShootingRange(),
+                                athleteStats.getThirdShootingRange())), athleteStats.getSkiTimeResults()));
+
             }
+
             int athleteIndexes = 0;
             for (AthleteStats athleteStats : athleteResultsSorted) {
                 if (athleteIndexes == 0) {
-                    System.out.println("Winner - " + athleteStats.getAthleteName() + " " + revertToMinutesAndSecondsFormat(athleteStats.getSkiTimeResults()));
+                    System.out.println("Winner - " + athleteStats.getAthleteName() + " " + revertToMinutesAndSecondsFormat(athleteStats.getSkiTimeResults()) + " (" + revertToMinutesAndSecondsFormat(athleteStats.getInitialSkiTimeResult()) + " + " + (athleteStats.getSkiTimeResults() - athleteStats.getInitialSkiTimeResult()) + ")");
                 } else if (athleteIndexes == 1) {
-                    System.out.println("Runner-up - " + athleteStats.getAthleteName() + " " + revertToMinutesAndSecondsFormat(athleteStats.getSkiTimeResults()));
+                    System.out.println("Runner-up - " + athleteStats.getAthleteName() + " " + revertToMinutesAndSecondsFormat(athleteStats.getSkiTimeResults()) + " (" + revertToMinutesAndSecondsFormat(athleteStats.getInitialSkiTimeResult()) + " + " + (athleteStats.getSkiTimeResults() - athleteStats.getInitialSkiTimeResult()) + ")");
                 } else if (athleteIndexes == 2) {
-                    System.out.println("Third place - " + athleteStats.getAthleteName() + " " + revertToMinutesAndSecondsFormat(athleteStats.getSkiTimeResults()));
+                    System.out.println("Third place - " + athleteStats.getAthleteName() + " " + revertToMinutesAndSecondsFormat(athleteStats.getSkiTimeResults()) + " (" + revertToMinutesAndSecondsFormat(athleteStats.getInitialSkiTimeResult()) + " + " + (athleteStats.getSkiTimeResults() - athleteStats.getInitialSkiTimeResult()) + ")");
                 } else {
-                    System.out.println(athleteIndexes + "th" + athleteStats.getAthleteName() + " " + revertToMinutesAndSecondsFormat(athleteStats.getSkiTimeResults()));
+                    System.out.println(athleteIndexes + 1 + "th " + athleteStats.getAthleteName() + " " + revertToMinutesAndSecondsFormat(athleteStats.getSkiTimeResults()) + " (" + revertToMinutesAndSecondsFormat(athleteStats.getInitialSkiTimeResult()) + " + " + (athleteStats.getSkiTimeResults() - athleteStats.getInitialSkiTimeResult()) + ")");
                 }
+                if (athleteIndexes == 2) {
+                    System.out.println("--------------------------------------");
+                }
+
                 athleteIndexes++;
             }
 
@@ -54,7 +60,7 @@ public class ResultMatcher {
         }
     }
 
-    static int calculateStanding(String time) {
+    int calculateStanding(String time) {
         int finalTime = 0;
         int index = 0;
         String result = "";
@@ -70,7 +76,7 @@ public class ResultMatcher {
             index++;
         }
         finalTime += Integer.valueOf(result);
-
+        initialTimeList.add(finalTime);
         return finalTime;
     }
 
