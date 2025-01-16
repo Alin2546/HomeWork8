@@ -29,11 +29,24 @@ public class ResultMatcher {
             int index = 0;
             for (AthleteStats athleteStats : athleteResults) {
                 athleteResultsSorted.add(new AthleteStats(athleteResults.get(index).getAthleteName(),
-                        Integer.valueOf(athleteResults.get(index).getSkiTimeResults()
+                        athleteResults.get(index).getSkiTimeResults()
                                 + calculateTotalStandingTime(athleteResults.get(index).getFirstShootingRange(),
                                 athleteResults.get(index).getSecondShootingRange(),
-                                athleteResults.get(index).getThirdShootingRange()))));
+                                athleteResults.get(index).getThirdShootingRange())));
                 index++;
+            }
+            int athleteIndexes = 0;
+            for (AthleteStats athleteStats : athleteResultsSorted) {
+                if (athleteIndexes == 0) {
+                    System.out.println("Winner - " + athleteStats.getAthleteName() + " " + revertToMinutesAndSecondsFormat(athleteStats.getSkiTimeResults()));
+                } else if (athleteIndexes == 1) {
+                    System.out.println("Runner-up - " + athleteStats.getAthleteName() + " " + revertToMinutesAndSecondsFormat(athleteStats.getSkiTimeResults()));
+                } else if (athleteIndexes == 2) {
+                    System.out.println("Third place - " + athleteStats.getAthleteName() + " " + revertToMinutesAndSecondsFormat(athleteStats.getSkiTimeResults()));
+                } else {
+                    System.out.println(athleteIndexes + "th" + athleteStats.getAthleteName() + " " + revertToMinutesAndSecondsFormat(athleteStats.getSkiTimeResults()));
+                }
+                athleteIndexes++;
             }
 
         } catch (IOException e) {
@@ -41,7 +54,7 @@ public class ResultMatcher {
         }
     }
 
-    public static int calculateStanding(String time) {
+    static int calculateStanding(String time) {
         int finalTime = 0;
         int index = 0;
         String result = "";
@@ -61,7 +74,7 @@ public class ResultMatcher {
         return finalTime;
     }
 
-    public int calculateTotalStandingTime(String first, String second, String third) {
+    int calculateTotalStandingTime(String first, String second, String third) {
         int count = 0;
         for (int i = 0; i < first.length(); i++) {
             if (first.charAt(i) == 'o') {
@@ -75,6 +88,15 @@ public class ResultMatcher {
             }
         }
         return count;
+    }
+
+    String revertToMinutesAndSecondsFormat(int timeResult) {
+        int timeInMinutes = 0;
+        while (timeResult > 60) {
+            timeInMinutes += 1;
+            timeResult -= 60;
+        }
+        return timeInMinutes + ":" + timeResult;
     }
 }
 

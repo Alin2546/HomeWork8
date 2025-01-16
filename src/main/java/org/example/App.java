@@ -11,6 +11,6 @@ public class App {
     public static void main(String[] args) {
 
         ResultMatcher matcher = new ResultMatcher(new File("ski results.csv"));
-        System.out.println(matcher.athleteResultsSorted);
+
     }
 }
