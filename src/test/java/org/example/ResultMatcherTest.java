@@ -1,10 +1,18 @@
 package org.example;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ResultMatcherTest extends TestCase {
-    void shouldReturnNull() {
-        assertEquals(20, 30);
+import static org.junit.jupiter.api.Assertions.*;
+
+class ResultMatcherTest {
+
+    @BeforeEach
+    void setUp() {
     }
 
+    @Test
+    void calculateStandingInputIsNull() {
+
+    }
 }

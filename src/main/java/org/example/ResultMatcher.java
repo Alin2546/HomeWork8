@@ -8,7 +8,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-
+/**
+ * <p>
+ * {@code ResultMatcher} class takes a file and calculates the result of a biathlon athlete time.
+ * </p>
+ *
+ * <p>
+ * The class computes athlete participants times results and make a ranking based on that.
+ * </p>
+ */
 @Data
 public class ResultMatcher {
 
@@ -16,17 +24,25 @@ public class ResultMatcher {
     List<AthleteStats> athleteResults = new ArrayList<>();
     Set<AthleteStats> athleteResultsSorted = new TreeSet<>(Comparator.comparingInt(AthleteStats::getSkiTimeResults));
     List<Integer> initialTimeList = new ArrayList<>();
-    Path path;
 
 
     public ResultMatcher(File file) {
+
+        // Reading from a file and saving results in arrayList but with time result formated to integer value in seconds
+
         try {
-            Path path = Paths.get("ski results.csv");
+            Path path = Paths.get(file.getPath());
             List<String> read = Files.readAllLines(path);
             for (String line : read) {
                 String[] compose = line.split(",");
                 athleteResults.add(new AthleteStats(Integer.parseInt(compose[0]), compose[1], compose[2], calculateStanding(compose[3]), compose[4], compose[5], compose[6]));
             }
+
+
+//             Adding the arrayList values in a set for sorted order, removing of duplicates and calculating
+//             total standing time before adding to set.
+
+//             Total standing time is skiTimeResult + time calculated from shooting range.
 
             for (AthleteStats athleteStats : athleteResults) {
                 athleteResultsSorted.add(new AthleteStats(athleteStats.getAthleteName(),
@@ -36,6 +52,11 @@ public class ResultMatcher {
                                 athleteStats.getThirdShootingRange())), athleteStats.getSkiTimeResults()));
 
             }
+
+//             Displaying the results and name of the athletes
+//
+//             Format is: Place of the contestant in the biathlon, name of the athlete,
+//             Total time, initial time before shooting range, shooting range penalty in seconds.
 
             int athleteIndexes = 0;
             for (AthleteStats athleteStats : athleteResultsSorted) {
@@ -60,26 +81,40 @@ public class ResultMatcher {
         }
     }
 
+    /**
+     * @param time The string to be parsed e.g., 30:15, 20:12
+     * @return int value in seconds from parsed string
+     * <p>
+     * finalTime = (integer value of the string first half * 60) + integer value of last half of the string.
+     * e.g, 30:15 = (30 * 60) + 15
+     * </p>
+     */
     int calculateStanding(String time) {
         int finalTime = 0;
         int index = 0;
-        String result = "";
+        StringBuilder result = new StringBuilder();
         while (time.charAt(index) != ':') {
-            result = result + time.charAt(index);
+            result.append(time.charAt(index));
             index++;
         }
-        finalTime += Integer.valueOf(result) * 60;
-        result = "";
+        finalTime += Integer.parseInt(result.toString()) * 60;
+        result = new StringBuilder();
         index++;
         while (index != time.length()) {
-            result = result + time.charAt(index);
+            result.append(time.charAt(index));
             index++;
         }
-        finalTime += Integer.valueOf(result);
+        finalTime += Integer.parseInt(result.toString());
         initialTimeList.add(finalTime);
         return finalTime;
     }
 
+    /**
+     * @param first  first shooting range result
+     * @param second second shooting range result
+     * @param third  third shooting range result
+     * @return integer value of first + second + third shooting range penalties in seconds
+     */
     int calculateTotalStandingTime(String first, String second, String third) {
         int count = 0;
         for (int i = 0; i < first.length(); i++) {
@@ -96,6 +131,10 @@ public class ResultMatcher {
         return count;
     }
 
+    /**
+     * @param timeResult timeResult
+     * @return String value of timeResult parameter in minutes:seconds format
+     */
     String revertToMinutesAndSecondsFormat(int timeResult) {
         int timeInMinutes = 0;
         while (timeResult > 60) {
