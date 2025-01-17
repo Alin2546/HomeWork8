@@ -2,7 +2,9 @@ package org.example;
 
 import lombok.Data;
 
+
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,10 +31,9 @@ public class ResultMatcher {
     public ResultMatcher(File file) {
 
         // Reading from a file and saving results in arrayList but with time result formated to integer value in seconds
-
+        Path path = Paths.get(file.getPath());
         try {
-            Path path = Paths.get(file.getPath());
-            List<String> read = Files.readAllLines(path);
+            List<String> read = Files.readAllLines(path, StandardCharsets.UTF_8);
             for (String line : read) {
                 String[] compose = line.split(",");
                 athleteResults.add(new AthleteStats(Integer.parseInt(compose[0]), compose[1], compose[2], calculateStanding(compose[3]), compose[4], compose[5], compose[6]));
@@ -77,9 +78,15 @@ public class ResultMatcher {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("There is not a file named: " + file.getPath());
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            System.out.println("------------------------------------");
+            System.out.println("Execution done");
         }
     }
+
 
     /**
      * @param time The string to be parsed e.g., 30:15, 20:12
