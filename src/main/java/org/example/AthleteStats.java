@@ -16,18 +16,18 @@ public class AthleteStats {
     private int initialSkiTimeResult;
 
     public AthleteStats(int athleteNumber, String athleteName, String countryCode, int skiTimeResults, String firstShootingRange, String secondShootingRange, String thirdShootingRange) {
-        AthleteNumber = athleteNumber;
-        AthleteName = athleteName;
+        this.AthleteNumber = athleteNumber;
+        this.AthleteName = athleteName;
         this.countryCode = countryCode;
-        SkiTimeResults = skiTimeResults;
+        this.SkiTimeResults = skiTimeResults;
         this.firstShootingRange = firstShootingRange;
         this.secondShootingRange = secondShootingRange;
         this.thirdShootingRange = thirdShootingRange;
     }
 
     public AthleteStats(String athleteName, int skiTimeResults, int initialSkiTimeResult) {
-        AthleteName = athleteName;
-        SkiTimeResults = skiTimeResults;
+        this.AthleteName = athleteName;
+        this.SkiTimeResults = skiTimeResults;
         this.initialSkiTimeResult = initialSkiTimeResult;
     }
 }
